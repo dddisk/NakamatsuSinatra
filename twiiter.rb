@@ -1,8 +1,16 @@
 # twitterライブラリの呼び出し
 require 'twitter'
+require 'dotenv'
+
+Dotenv.load
 
 # アクセストークンなどを設定
 @client = Twitter::REST::Client.new do |config|
+
+  config.consumer_key        = ENV["CONSUMER_KEY"]
+  config.consumer_secret     = ENV["CONSUMER_SECRET"]
+  config.access_token        = ENV["ACCESS_TOKEN"]
+  config.access_token_secret = ENV["ACCESS_TOKEN_SECRET"]
 end
 
 # client tutorial
@@ -17,17 +25,20 @@ end
 
 # display timeline
 def homeTimeline
-  @client.home_timeline.each do |tweet|
-    puts "\e[33m" + tweet.user.name + "\e[32m" + "[ID:" + tweet.user.screen_name + "]"
-    puts "\e[0m" + tweet.text
+  @client.user_timeline("theokinawatimes").each do |tweet|
+    puts tweet.text
+
+
   end
 end
 
 # display mentions
 def mentionTimeline
-  @client.mentions_timeline.each do |tweet|
+  @client.mentions_timeline(:count => 1000).each do |tweet|
+    if tweet.user.screen_name == "tkya03"
     puts "\e[33m" + tweet.user.name + "\e[32m" + "[ID:" + tweet.user.screen_name + "]"
     puts "\e[0m" + tweet.text
+    end
   end
 end
 
@@ -39,11 +50,11 @@ def listTimeline
   end
 end
 
-# tweet
-def tweet
-  @client.update(ARGV[0])
-  puts "Tweetしたぞい"
-end
+# # tweet
+# def tweet
+#   @client.update(ARGV[0])
+#   puts "Tweetしたぞい"
+# end
 
 option = ARGV[0].to_s
 
@@ -56,6 +67,6 @@ elsif option == "-m" then
 elsif option == "-l" then
   listTimeline
 else
-  tweet
+  # tweet
   homeTimeline
 end
