@@ -2,7 +2,7 @@ require 'sinatra'
 require 'sinatra/reloader'
 
 get '/' do
-  'how are you?'
+  'testtt?'
 end
 
 get '/path/to' do
